@@ -1,0 +1,4 @@
+*.superpowers/
+*.venv/
+*.env
+*__pycache__/
