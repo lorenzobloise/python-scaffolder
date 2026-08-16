@@ -1,6 +1,3 @@
-import pytest
-import yaml
-from pathlib import Path
 from unittest.mock import patch
 
 def test_load_config_returns_dict(tmp_path):
