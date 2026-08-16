@@ -1,0 +1,32 @@
+# python-scaffolder configuration
+# Comment out an entire top-level section to disable the corresponding scaffolding step
+
+git:
+  default_branch: main
+
+gitignore:
+  sections:
+    - '*.env'
+    - '*.venv/'
+    - '*__pycache__/'
+    - '*.egg-info/'
+    - '*.superpowers/'
+
+precommit:
+  hooks:
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: black
+    - id: ruff
+
+venv:
+  packages:
+    - pre-commit
+    - pytest
+
+dotenv:
+  variables:
+    - key: DEBUG
+      value: "true"
+    - key: LOG_LEVEL
+      value: "INFO"
