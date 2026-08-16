@@ -11,6 +11,7 @@ gitignore:
     - '*__pycache__/'
     - '*.egg-info/'
     - '*.superpowers/'
+    - '*cache/'
 
 precommit:
   hooks:
