@@ -30,13 +30,6 @@ gitignore:
       - '*.env'
       - '*.env.*'
 
-# precommit:
-#   hooks:
-#     - id: trailing-whitespace
-#     - id: end-of-file-fixer
-#     - id: black
-#     - id: ruff
-
 precommit:
   repos:
     - id: "pre-commit-hooks"
