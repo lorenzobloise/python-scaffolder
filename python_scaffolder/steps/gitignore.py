@@ -1,6 +1,10 @@
 from pathlib import Path
 
 def run(path: Path, config: dict) -> None:
+    """
+    Generate .gitignore by concatenating predefined blocks for each section.
+    Empty section names are skipped with a warning.
+    """
     sections: dict[str, list[str]] = config.get("sections", {})
     lines: list[str] = []
     non_empty_sections: list[str] = []

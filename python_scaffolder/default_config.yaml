@@ -30,12 +30,53 @@ gitignore:
       - '*.env'
       - '*.env.*'
 
+# precommit:
+#   hooks:
+#     - id: trailing-whitespace
+#     - id: end-of-file-fixer
+#     - id: black
+#     - id: ruff
+
 precommit:
-  hooks:
-    - id: trailing-whitespace
-    - id: end-of-file-fixer
-    - id: black
-    - id: ruff
+  repos:
+    - id: "pre-commit-hooks"
+      repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v5.0.0
+      description: "Generic cleanup and config-file checks"
+      hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+    - id: "ruff-pre-commit"
+      repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.14.7
+      description: "Python: lint + formatting (Ruff)"
+      hooks:
+        - id: ruff-check
+          args: ["--fix"]
+    - id: "detect-secrets"
+      repo: https://github.com/Yelp/detect-secrets
+      rev: v1.4.0
+      description: "Security: detect secrets"
+      hooks:
+        - id: detect-secrets
+    - id: "bandit"
+      repo: https://github.com/PyCQA/bandit
+      rev: 1.7.9
+      description: "Python security analysis"
+      hooks:
+        - id: bandit
+          args: ["-q", "-ll"]
+    - id: "commitlint"
+      repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+      rev: v9.16.0
+      description: "Commit message semantic validation"
+      hooks:
+        - id: commitlint
+          stages: [commit-msg]
+          additional_dependencies:
+            - "@commitlint/config-conventional"
 
 venv:
   packages:
