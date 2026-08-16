@@ -6,12 +6,29 @@ git:
 
 gitignore:
   sections:
-    - '*.env'
-    - '*.venv/'
-    - '*__pycache__/'
-    - '*.egg-info/'
-    - '*.superpowers/'
-    - '*cache/'
+    python:
+      - '*__pycache__/'
+      - '*.py[cod]'
+      - '*.pyo'
+      - '*.pyd'
+      - '*.egg-info/'
+      - 'dist/'
+      - 'build/'
+      - '*.egg'
+      - '.eggs/'
+    venv:
+      - '*.venv/'
+      - '*venv/'
+      - '*env/'
+    ide:
+      - '*.idea/'
+      - '*.vscode/'
+      - '*.swp'
+      - '*.swo'
+      - '*.DS_Store'
+    env:
+      - '*.env'
+      - '*.env.*'
 
 precommit:
   hooks:
