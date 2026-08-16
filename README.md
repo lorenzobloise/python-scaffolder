@@ -1,6 +1,128 @@
-# Python Scaffolder
+# python-scaffolder
 
-This is a tool to automatically scaffold a new Python project with a simple CLI interface.
+A pip-installable CLI tool that scaffolds new Python projects from a YAML configuration file.
+
+## Installation
+
+```bash
+pip install git+https://github.com/<org>/python-scaffolder
+```
+
+## Usage
+
+```bash
+python-scaffolder my-new-project
+python-scaffolder /home/user/projects/my-new-project
+```
+
+On first run, a default config is created at `~/.python-scaffolder/config.yaml`.
+
+## Configuration
+
+Edit `~/.python-scaffolder/config.yaml` to customise your scaffolding.
+Comment out an entire section to disable that step.
+
+```yaml
+git:
+  default_branch: main
+
+gitignore:
+  sections:
+    python:
+      - '*__pycache__/'
+      - '*.py[cod]'
+      - '*.pyo'
+      - '*.pyd'
+      - '*.egg-info/'
+      - 'dist/'
+      - 'build/'
+      - '*.egg'
+      - '.eggs/'
+    venv:
+      - '*.venv/'
+      - '*venv/'
+      - '*env/'
+    ide:
+      - '*.idea/'
+      - '*.vscode/'
+      - '*.swp'
+      - '*.swo'
+      - '*.DS_Store'
+    env:
+      - '*.env'
+      - '*.env.*'
+
+precommit:
+  repos:
+    - id: "pre-commit-hooks"
+      repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v5.0.0
+      description: "Generic cleanup and config-file checks"
+      hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+    - id: "ruff-pre-commit"
+      repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.14.7
+      description: "Python: lint + formatting (Ruff)"
+      hooks:
+        - id: ruff-check
+          args: ["--fix"]
+    - id: "detect-secrets"
+      repo: https://github.com/Yelp/detect-secrets
+      rev: v1.4.0
+      description: "Security: detect secrets"
+      hooks:
+        - id: detect-secrets
+    - id: "bandit"
+      repo: https://github.com/PyCQA/bandit
+      rev: 1.7.9
+      description: "Python security analysis"
+      hooks:
+        - id: bandit
+          args: ["-q", "-ll"]
+    - id: "commitlint"
+      repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+      rev: v9.16.0
+      description: "Commit message semantic validation"
+      hooks:
+        - id: commitlint
+          stages: [commit-msg]
+          additional_dependencies:
+            - "@commitlint/config-conventional"
+
+venv:
+  packages:
+    - pre-commit
+    - pytest
+
+dotenv:
+  variables:
+    - key: DEBUG
+      value: "true"
+    - key: LOG_LEVEL
+      value: "INFO"
+```
+
+For new pre-commit hooks, provide `id`, `repo`, `rev` and `hooks` (optionally a `description`):
+
+```yaml
+precommit:
+  repos:
+      - repo: https://github.com/econchick/interrogate
+        rev: 1.5.0
+        description: "Docstring coverage"
+        hooks:
+        - id: interrogate
+            args: ["--quiet", "--fail-under=70"]
+```
+
+## Requirements
+
+- Python 3.10+
+- git available on PATH
 
 ## Credits
 
