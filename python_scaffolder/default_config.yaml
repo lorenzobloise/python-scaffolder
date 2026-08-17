@@ -61,15 +61,6 @@ precommit:
       hooks:
         - id: bandit
           args: ["-q", "-ll"]
-    - id: "commitlint"
-      repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-      rev: v9.16.0
-      description: "Commit message semantic validation"
-      hooks:
-        - id: commitlint
-          stages: [commit-msg]
-          additional_dependencies:
-            - "@commitlint/config-conventional"
     - id: ensure-gitignore-vscode
       repo: https://github.com/lorenzobloise/ensure-gitignore-vscode
       rev: v1.0.2
