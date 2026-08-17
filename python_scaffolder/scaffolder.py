@@ -17,7 +17,7 @@ def run(path: Path, config: dict) -> None:
     Steps whose section is absent from config are skipped.
     If a step raises, execution halts immediately (no cleanup)
     """
-    print(f"Creating project at {path}...")
+    print(f"Creating project at {path}...\n")
     path.mkdir(parents=True, exist_ok=False)
 
     for step_name, StepModule in _STEPS:
@@ -27,4 +27,4 @@ def run(path: Path, config: dict) -> None:
             continue
         StepModule().run(path, step_config)
 
-    print(f"\n Done. Project ready at {path}")
+    print(f"\nDone. Project ready at {path}")
