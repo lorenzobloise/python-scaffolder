@@ -1,0 +1,118 @@
+# CI/CD pipeline for python-scaffolder
+# Two separate jobs:
+#   1. "test"    → runs on every push on branch 'main' and every Pull Request
+#   2. "publish" → runs ONLY when a release tag is pushed (e.g. v0.2.0)
+#
+# To publish to PyPI using a classic API token, add a secret to the repository:
+#   Settings → Secrets and variables → Actions → New repository secret
+#   Name:  PYPI_API_TOKEN
+#   Value: the token from pypi.org → Account settings → API tokens
+
+name: CI/CD
+
+on:
+  push:
+    branches: ["main"]          # run tests on every push, on branch 'main'
+    tags:
+      - "v*"                  # trigger publish only for version tags like v0.2.0
+  pull_request:
+    branches: ["**"]          # run tests on every PR
+
+jobs:
+
+  # ──────────────────────────────────────────────
+  # JOB 1: test
+  # Runs on every push on branch 'main' and PR.
+  # Lints the code, then runs the test suite across
+  # multiple Python versions to ensure compatibility.
+  # ──────────────────────────────────────────────
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false          # keep testing other versions even if one fails
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]   # pyproject.toml requires >=3.10
+
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"          # cache dependencies to speed up subsequent runs
+
+      - name: Install development dependencies
+        # Installs the package in editable mode (-e) together with all dependencies
+        # declared in pyproject.toml, including the optional test extras
+        # (pytest, defined under [project.optional-dependencies])
+        run: pip install -e ".[test]"
+
+      - name: Lint with Ruff
+        # Ruff checks code style and quality
+        run: |
+          pip install ruff
+          ruff check .          # static analysis
+          ruff format --check . # verify that formatting is consistent
+
+      - name: Run tests with pytest
+        # Discovers and runs all tests in the tests/ folder
+        run: pytest tests/ -v
+
+  # ──────────────────────────────────────────────
+  # JOB 2: publish
+  # Runs ONLY when a v* tag is pushed.
+  # Waits for the "test" job to pass on all Python
+  # versions before proceeding with the release.
+  # ──────────────────────────────────────────────
+  # publish:
+  #   name: Build and publish to PyPI
+  #   runs-on: ubuntu-latest
+  #   needs: test                 # block publishing until all tests pass
+  #   if: startsWith(github.ref, 'refs/tags/v')   # release tags only
+
+  #   # Permissions required for PyPI Trusted Publishing (OIDC).
+  #   # Remove this block if you prefer a classic API token instead.
+  #   permissions:
+  #     id-token: write
+
+  #   steps:
+  #     - name: Check out the source code
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.13"   # used only for the build step; does not affect the package
+  #         cache: "pip"
+
+  #     - name: Install build tools
+  #       # "build" creates the wheel (.whl) and the source distribution (.tar.gz).
+  #       # "twine" validates the generated files before uploading them.
+  #       run: pip install build twine
+
+  #     - name: Build the package
+  #       # Generates the distribution files in dist/:
+  #       #   - python_scaffolder-X.Y.Z-py3-none-any.whl  (wheel)
+  #       #   - python_scaffolder-X.Y.Z.tar.gz             (sdist)
+  #       run: python -m build
+
+  #     - name: Validate the package with Twine
+  #       # Checks that the package metadata and contents are correct before
+  #       # touching PyPI. Catches common issues early (e.g. unrenderable README,
+  #       # missing metadata fields).
+  #       run: twine check dist/*
+
+  #     - name: Publish to PyPI
+  #       # Uploads the files in dist/ to pypi.org.
+  #       # Uses Trusted Publishing (OIDC) — no password or token needed if you have
+  #       # configured the publisher on pypi.org → your project → Publishing.
+  #       # To use a classic API token instead, replace this step with:
+  #       #   run: twine upload dist/*
+  #       #   env:
+  #       #     TWINE_USERNAME: __token__
+  #       #     TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+  #       uses: pypa/gh-action-pypi-publish@release/v1
