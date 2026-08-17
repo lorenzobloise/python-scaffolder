@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "python-scaffolder"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["pyyaml"]
+dependencies = ["pyyaml", "tqdm"]
 
 [project.scripts]
 python-scaffolder = "python_scaffolder.cli:main"

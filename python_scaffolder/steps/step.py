@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from python_scaffolder.utils import _log
+
 _NUM_INDENTATIONS: int = 1
 _WIDTH: int = 15
 
@@ -13,18 +15,22 @@ class Step(ABC):
     @abstractmethod
     def run(self, path: Path, config: dict) -> None: ...
 
-    def _format_msg(self, msg: str, log_label: str="") -> str:
-        current_step_label: str = f"[{self.name}]"
-        return f"{current_step_label:<{_WIDTH}}{'  ' * _NUM_INDENTATIONS}{log_label}{msg}"
+    @classmethod
+    def _format_msg(self, msg: str, step_name: str="", log_label: str="") -> str:
+        start_label: str = ""
+        if step_name:
+            current_step_label: str = f"[{step_name}]"
+            start_label = f"{current_step_label:<{_WIDTH}}{'  ' * _NUM_INDENTATIONS}"
+        return f"{start_label}{log_label}{msg}"
 
     def log(self, msg: str) -> None:
-        print(self._format_msg(msg))
+        _log(Step._format_msg(msg=msg, step_name=self.name))
 
     def warn(self, msg: str) -> None:
-        print(self._format_msg(msg, log_label="Warning: "))
+        _log(Step._format_msg(msg=msg, step_name=self.name, log_label="Warning: "))
 
     def error(self, msg: str) -> None:
-        print(self._format_msg(msg, log_label="Error: "))
+        _log(Step._format_msg(msg=msg, step_name=self.name, log_label="Error: "))
 
     def success(self, msg: str) -> None:
-        print(self._format_msg(msg, log_label="✓ "))
+        _log(Step._format_msg(msg=msg, step_name=self.name, log_label="✓ "))

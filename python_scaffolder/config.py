@@ -2,6 +2,8 @@ from importlib.resources import files
 from pathlib import Path
 import yaml
 
+from python_scaffolder.utils import _log
+
 CONFIG_PATH = Path.home() / ".python-scaffolder" / "config.yaml"
 
 def load_config() -> dict:
@@ -22,7 +24,7 @@ def _bootstrap_config() -> None:
     default = files("python_scaffolder").joinpath("default_config.yaml")
     with default.open() as src:
         CONFIG_PATH.write_text(src.read())
-    print(f"Created default config at {CONFIG_PATH} - edit it to customize your scaffolding.")
+    _log(msg=f"Created default config at {CONFIG_PATH} - edit it to customize your scaffolding.")
 
 def get_step_config(config: dict, step: str) -> dict | None:
     """
