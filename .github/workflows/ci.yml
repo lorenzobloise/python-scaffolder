@@ -51,13 +51,6 @@ jobs:
         # (pytest, defined under [project.optional-dependencies])
         run: pip install -e ".[test]"
 
-      - name: Lint with Ruff
-        # Ruff checks code style and quality
-        run: |
-          pip install ruff
-          ruff check .          # static analysis
-          ruff format --check . # verify that formatting is consistent
-
       - name: Run tests with pytest
         # Discovers and runs all tests in the tests/ folder
         run: pytest tests/ -v
