@@ -126,7 +126,7 @@ precommit:
 
 ## Credits
 
-**Lorenzo Bloise**  
+**Lorenzo Bloise**
 Developer & Maintainer
 
 - 📧 [l.bloise@reply.it](mailto:l.bloise@reply.it)

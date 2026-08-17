@@ -39,7 +39,7 @@ def test_scaffolder_skips_step_when_section_absent(tmp_path, capsys):
 
 def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     from python_scaffolder.scaffolder import run
-    
+
     project_path: Path = tmp_path / "my-project"
     config: dict = {
         "git": {"default_branch": "main"},
@@ -66,7 +66,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
 
 def test_scaffolder_halts_on_step_exception(tmp_path, capsys):
     from python_scaffolder.scaffolder import run
-        
+
     project_path: Path = tmp_path / "my-project"
     config: dict = {
         "git": {"default_branch": "main"},

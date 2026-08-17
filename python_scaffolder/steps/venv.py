@@ -28,4 +28,4 @@ def run(path: Path, config: dict) -> None:
         )
         print(f"[venv]  Created .venv, installed: {', '.join(packages)}")
     else:
-        print(f"[venv]  Created .venv")
+        print("[venv]  Created .venv")

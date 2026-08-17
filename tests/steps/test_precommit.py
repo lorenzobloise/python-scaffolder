@@ -24,7 +24,7 @@ def test_precommit_requires_id_repo_rev_and_hooks(tmp_path):
 
 def test_precommit_hook_with_empty_fields_is_skipped(tmp_path, capsys):
     from python_scaffolder.steps.precommit import run
-    
+
     config = {
         "repos": [
             {
@@ -68,7 +68,7 @@ def test_precommit_hook_extra_fields_passed_through(tmp_path):
     config = {
         "hooks": [
             {
-                "id": "black", 
+                "id": "black",
                 "args": ["--line-length", "100"]
             }
         ]

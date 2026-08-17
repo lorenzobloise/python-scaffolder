@@ -1,5 +1,5 @@
 import sys
-from unittest.mock import patch, call
+from unittest.mock import patch
 
 def test_venv_creates_venv_directory(tmp_path):
     """run() calls python -m venv .venv inside the project path"""

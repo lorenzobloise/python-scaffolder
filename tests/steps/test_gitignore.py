@@ -10,7 +10,7 @@ def test_gitignore_python_section(tmp_path):
 
 def test_gitignore_venv_section(tmp_path):
     from python_scaffolder.steps.gitignore import run
-    
+
     config = {"sections": {"venv": ["*.venv/"]}}
     run(tmp_path, config)
 
@@ -19,7 +19,7 @@ def test_gitignore_venv_section(tmp_path):
 
 def test_gitignore_ide_section(tmp_path):
     from python_scaffolder.steps.gitignore import run
-    
+
     config = {"sections": {"ide": ["*.idea/", "*.vscode/"]}}
     run(tmp_path, config)
 
@@ -29,7 +29,7 @@ def test_gitignore_ide_section(tmp_path):
 
 def test_gitignore_env_section(tmp_path):
     from python_scaffolder.steps.gitignore import run
-    
+
     config = {"sections": {"env": ["*.env"]}}
     run(tmp_path, config)
 
@@ -38,12 +38,12 @@ def test_gitignore_env_section(tmp_path):
 
 def test_gitignore_multiple_sections(tmp_path):
     from python_scaffolder.steps.gitignore import run
-        
+
     config = {
         "sections": {
-            "python": ["*__pycache__/"], 
-            "venv": ["*.venv/"], 
-            "ide": ["*.vscode/"], 
+            "python": ["*__pycache__/"],
+            "venv": ["*.venv/"],
+            "ide": ["*.vscode/"],
             "env": ["*.env"]
         }
     }
@@ -57,10 +57,10 @@ def test_gitignore_multiple_sections(tmp_path):
 
 def test_gitignore_empty_section_is_skipped(tmp_path, capsys):
     from python_scaffolder.steps.gitignore import run
-            
+
     config = {
         "sections": {
-            "empty-section": None, 
+            "empty-section": None,
             "python": ["*__pycache__/"]
         }
     }
