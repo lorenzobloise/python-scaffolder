@@ -1,14 +1,14 @@
 def test_dotenv_writes_key_with_value(tmp_path):
-    from python_scaffolder.steps.dotenv import run
+    from python_scaffolder.steps.dotenv import Dotenv
 
     config = {"variables": [{"key": "DEBUG", "value": "true"}]}
-    run(tmp_path, config)
+    Dotenv().run(tmp_path, config)
 
     content = (tmp_path / ".env").read_text()
     assert "DEBUG=true" in content
 
 def test_dotenv_writes_key_without_value(tmp_path):
-    from python_scaffolder.steps.dotenv import run
+    from python_scaffolder.steps.dotenv import Dotenv
 
     config = {
         "variables": [
@@ -17,7 +17,7 @@ def test_dotenv_writes_key_without_value(tmp_path):
             {"key": "DATABASE_URL"}
         ]
     }
-    run(tmp_path, config)
+    Dotenv().run(tmp_path, config)
 
     content = (tmp_path / ".env").read_text()
     assert "DEBUG=true" in content
@@ -25,10 +25,10 @@ def test_dotenv_writes_key_without_value(tmp_path):
     assert "DATABASE_URL=" in content
 
 def test_dotenv_empty_variables_creates_empty_file(tmp_path):
-    from python_scaffolder.steps.dotenv import run
+    from python_scaffolder.steps.dotenv import Dotenv
 
     config = {"variables": []}
-    run(tmp_path, config)
+    Dotenv().run(tmp_path, config)
 
     assert (tmp_path / ".env").exists()
     assert (tmp_path / ".env").read_text() == ""

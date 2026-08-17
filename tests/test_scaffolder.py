@@ -19,7 +19,7 @@ def test_scaffolder_runs_step_when_section_present(tmp_path):
     project_path: Path = tmp_path / "my-project"
     config: dict = {"git": {"default_branch": "main"}}
 
-    with patch("python_scaffolder.scaffolder.git.run") as mock_git:
+    with patch("python_scaffolder.scaffolder.git.Git.run") as mock_git:
         run(project_path, config)
 
     mock_git.assert_called_once_with(project_path, {"default_branch": "main"})
@@ -30,7 +30,7 @@ def test_scaffolder_skips_step_when_section_absent(tmp_path, capsys):
     project_path: Path = tmp_path / "my-project"
     config: dict = {} # no git section
 
-    with patch("python_scaffolder.scaffolder.git.run") as mock_git:
+    with patch("python_scaffolder.scaffolder.git.Git.run") as mock_git:
         run(project_path, config)
 
     mock_git.assert_not_called()
@@ -50,11 +50,11 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     }
 
     with (
-        patch("python_scaffolder.scaffolder.git.run") as mock_git,
-        patch("python_scaffolder.scaffolder.gitignore.run") as mock_gitignore,
-        patch("python_scaffolder.scaffolder.precommit.run") as mock_precommit,
-        patch("python_scaffolder.scaffolder.venv.run") as mock_venv,
-        patch("python_scaffolder.scaffolder.dotenv.run") as mock_dotenv,
+        patch("python_scaffolder.scaffolder.git.Git.run") as mock_git,
+        patch("python_scaffolder.scaffolder.gitignore.Gitignore.run") as mock_gitignore,
+        patch("python_scaffolder.scaffolder.precommit.Precommit.run") as mock_precommit,
+        patch("python_scaffolder.scaffolder.venv.Venv.run") as mock_venv,
+        patch("python_scaffolder.scaffolder.dotenv.Dotenv.run") as mock_dotenv,
     ):
         run(project_path, config)
 
@@ -74,8 +74,8 @@ def test_scaffolder_halts_on_step_exception(tmp_path, capsys):
     }
 
     with (
-        patch("python_scaffolder.scaffolder.git.run", side_effect=RuntimeError("git not found")),
-        patch("python_scaffolder.scaffolder.gitignore.run") as mock_gitignore,
+        patch("python_scaffolder.scaffolder.git.Git.run", side_effect=RuntimeError("git not found")),
+        patch("python_scaffolder.scaffolder.gitignore.Gitignore.run") as mock_gitignore,
     ):
         with pytest.raises(RuntimeError, match="git not found"):
             run(project_path, config)

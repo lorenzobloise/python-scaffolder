@@ -2,30 +2,38 @@ import subprocess
 import sys
 from pathlib import Path
 
+from python_scaffolder.steps.step import Step
+
 def _pip_path(project_path: Path) -> Path:
     """Return the path to pip inside the .venv, cross-platform."""
     if sys.platform == "win32":
         return project_path / ".venv" / "Scripts" / "pip"
     return project_path / ".venv" / "bin" / "pip"
 
-def run(path: Path, config: dict) -> None:
-    """
-    Create a .venv inside path using the current Python interpreter.
-    If config['packages'] is non-empty, install them via the venv's pip
-    """
-    venv_path: Path = path / ".venv"
-    subprocess.run(
-        [sys.executable, "-m", "venv", str(venv_path)],
-        check=True
-    )
+class Venv(Step):
 
-    packages: list[str] = config.get("packages", [])
-    if packages:
-        pip: Path = _pip_path(path)
+    @property
+    def name(self) -> str:
+        return "venv"
+
+    def run(self, path: Path, config: dict) -> None:
+        """
+        Create a .venv inside path using the current Python interpreter.
+        If config['packages'] is non-empty, install them via the venv's pip
+        """
+        venv_path: Path = path / ".venv"
         subprocess.run(
-            [str(pip), "install"] + packages,
+            [sys.executable, "-m", "venv", str(venv_path)],
             check=True
         )
-        print(f"[venv]  Created .venv, installed: {', '.join(packages)}")
-    else:
-        print("[venv]  Created .venv")
+
+        packages: list[str] = config.get("packages", [])
+        if packages:
+            pip: Path = _pip_path(path)
+            subprocess.run(
+                [str(pip), "install"] + packages,
+                check=True
+            )
+            self.success(f"Created .venv, installed: {', '.join(packages)}")
+        else:
+            self.success("Created .venv")
