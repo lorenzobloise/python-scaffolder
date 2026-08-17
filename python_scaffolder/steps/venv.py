@@ -24,7 +24,9 @@ class Venv(Step):
         venv_path: Path = path / ".venv"
         subprocess.run(
             [sys.executable, "-m", "venv", str(venv_path)],
-            check=True
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
         )
 
         packages: list[str] = config.get("packages", [])
@@ -32,7 +34,9 @@ class Venv(Step):
             pip: Path = _pip_path(path)
             subprocess.run(
                 [str(pip), "install"] + packages,
-                check=True
+                check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
             )
             self.success(f"Created .venv, installed: {', '.join(packages)}")
         else:

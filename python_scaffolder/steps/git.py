@@ -16,9 +16,16 @@ class Git(Step):
         """
         branch: str = config.get("default_branch", "main")
 
-        subprocess.run(["git", "init", str(path)], check=True)
+        subprocess.run(
+            ["git", "init", str(path)],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
         subprocess.run(
             ["git", "-C", str(path), "checkout", "-b", branch],
-            check=True
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
         )
         self.success(f"Initialized repository (branch: {branch})")
