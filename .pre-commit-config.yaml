@@ -27,3 +27,9 @@ repos:
     hooks:
       - id: bandit
         args: ["-q", "-ll"]
+
+  # Ensure .vscode/ in .gitignore file
+  - repo: https://github.com/lorenzobloise/ensure-gitignore-vscode
+    rev: v1.0.2
+    hooks:
+      - id: ensure-gitignore-vscode

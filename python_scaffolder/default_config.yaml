@@ -70,6 +70,12 @@ precommit:
           stages: [commit-msg]
           additional_dependencies:
             - "@commitlint/config-conventional"
+    - id: ensure-gitignore-vscode
+      repo: https://github.com/lorenzobloise/ensure-gitignore-vscode
+      rev: v1.0.2
+      description: "Ensure .vscode/ in .gitignore file"
+      hooks:
+        - id: ensure-gitignore-vscode
 
 venv:
   packages:
