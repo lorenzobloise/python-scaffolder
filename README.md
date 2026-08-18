@@ -15,7 +15,7 @@ python-scaffolder my-new-project
 python-scaffolder /home/user/projects/my-new-project
 ```
 
-On first run, a default config is created at `~/.python-scaffolder/config.yaml`.
+On install, default config is created at `~/.python-scaffolder/config.yaml`.
 
 ## Configuration
 
@@ -23,6 +23,9 @@ Edit `~/.python-scaffolder/config.yaml` to customise your scaffolding.
 Comment out an entire section to disable that step.
 
 ```yaml
+# python-scaffolder configuration
+# Comment out an entire top-level section to disable the corresponding scaffolding step
+
 git:
   default_branch: main
 
@@ -83,15 +86,12 @@ precommit:
       hooks:
         - id: bandit
           args: ["-q", "-ll"]
-    - id: "commitlint"
-      repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-      rev: v9.16.0
-      description: "Commit message semantic validation"
+    - id: ensure-gitignore-vscode
+      repo: https://github.com/lorenzobloise/ensure-gitignore-vscode
+      rev: v1.0.2
+      description: "Ensure .vscode/ in .gitignore file"
       hooks:
-        - id: commitlint
-          stages: [commit-msg]
-          additional_dependencies:
-            - "@commitlint/config-conventional"
+        - id: ensure-gitignore-vscode
 
 venv:
   packages:
@@ -104,6 +104,17 @@ dotenv:
       value: "true"
     - key: LOG_LEVEL
       value: "INFO"
+
+directories:
+  directories:
+    - docs/
+    - tests/
+
+ci-cd:
+  platform: github # {github -> GitHub Actions, gitlab -> GitLab Pipelines, devops -> Azure DevOps Pipelines}
+  steps:
+    - test
+    - docker
 ```
 
 For new pre-commit hooks, provide `id`, `repo`, `rev` and `hooks` (optionally a `description`):
