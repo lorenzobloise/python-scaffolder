@@ -15,4 +15,7 @@ python-scaffolder = "python_scaffolder.cli:main"
 test = ["pytest"]
 
 [tool.setuptools.package-data]
-python_scaffolder = ["default_config.yaml"]
+python_scaffolder = [
+    "default_config.yaml",
+    "assets/**/*.yml"
+]

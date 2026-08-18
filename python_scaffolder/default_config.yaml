@@ -84,3 +84,9 @@ directories:
   directories:
     - docs/
     - tests/
+
+ci-cd:
+  platform: github # {github -> GitHub Actions, gitlab -> GitLab Pipelines, devops -> Azure DevOps Pipelines}
+  steps:
+    - test
+    - docker

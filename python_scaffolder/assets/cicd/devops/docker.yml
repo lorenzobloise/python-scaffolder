@@ -1,0 +1,2 @@
+  - script: docker build -t my-app .
+    displayName: "Build Docker image"

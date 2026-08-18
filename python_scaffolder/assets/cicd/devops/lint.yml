@@ -1,0 +1,4 @@
+  - script: |
+      python -m pip install -r requirements.txt
+      ruff check .
+    displayName: "Lint"

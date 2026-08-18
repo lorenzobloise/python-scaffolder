@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from pathlib import Path
 
-from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE
+from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, BusinessException
 
 _NUM_INDENTATIONS: int = 1
 _WIDTH: int = 15
@@ -23,7 +23,7 @@ class Step(ABC):
     def run(self, path: Path, config: dict) -> None: ...
 
     @classmethod
-    def _format_msg(self, msg: str, step_name: str="", log_label: str="") -> str:
+    def _format_msg(cls, msg: str, step_name: str="", log_label: str="") -> str:
         start_label: str = ""
         if step_name:
             current_step_label: str = f"[{step_name}]"
@@ -41,3 +41,4 @@ class Step(ABC):
 
     def error(self, msg: str) -> None:
         self.log(msg, log_label=LogLabel.ERROR, start=_CARRIAGE_RETURN_SEQUENCE)
+        raise BusinessException

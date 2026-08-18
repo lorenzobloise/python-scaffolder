@@ -1,14 +1,15 @@
 import itertools
 from pathlib import Path
+import shutil
 import sys
 import threading
 import time
 from tqdm import tqdm
 
 from python_scaffolder.config import get_step_config
-from python_scaffolder.steps import directories, dotenv, git, gitignore, precommit, venv
+from python_scaffolder.steps import cicd, directories, dotenv, git, gitignore, precommit, venv
 from python_scaffolder.steps.step import Step
-from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, _HIDE_CURSOR, _SHOW_CURSOR
+from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, _HIDE_CURSOR, _SHOW_CURSOR, BusinessException
 
 _STEPS = [
     ("git", git.Git),
@@ -16,7 +17,8 @@ _STEPS = [
     ("precommit", precommit.Precommit),
     ("venv", venv.Venv),
     ("dotenv", dotenv.Dotenv),
-    ("directories", directories.Directories)
+    ("directories", directories.Directories),
+    ("ci-cd", cicd.CICD)
 ]
 
 def _tqdm_loading(msg: str="Loading...", step_name: str="", interval: float=0.25) -> tuple:
@@ -52,18 +54,28 @@ def run(path: Path, config: dict) -> None:
     path.mkdir(parents=True, exist_ok=False)
 
     progress_bar: tqdm = tqdm(_STEPS, total=len(_STEPS), position=1, mininterval=0.0, leave=False)
-    for step_name, StepModule in progress_bar:
-        stop_event, thread, spinner_bar = _tqdm_loading(step_name=step_name)
+    try:
+        for step_name, StepModule in progress_bar:
+            stop_event, thread, spinner_bar = _tqdm_loading(step_name=step_name)
 
-        try:
-            step_config: dict | None = get_step_config(config, step_name)
-            if not step_config:
-                _log(Step._format_msg(msg="Skipping: not configured", step_name=step_name), start=_CARRIAGE_RETURN_SEQUENCE)
-                continue
-            StepModule().run(path, step_config)
-        finally:
-            stop_event.set()
-            thread.join()
-            spinner_bar.close()
+            try:
+                step_config: dict | None = get_step_config(config, step_name)
+                if not step_config:
+                    _log(Step._format_msg(msg="Skipping: not configured", step_name=step_name), start=_CARRIAGE_RETURN_SEQUENCE)
+                    continue
+                StepModule().run(path, step_config)
+            except BusinessException:
+                raise Exception
+            finally:
+                stop_event.set()
+                thread.join()
+                spinner_bar.close()
+    except Exception:
+        _log(Step._format_msg(msg=f"\nCleaning up {path}...\n"))
+        shutil.rmtree(path)
+        _log(Step._format_msg(msg="Cleaning up completed.\n"))
+        sys.exit(1)
+    finally:
+        progress_bar.close()
 
     _log(Step._format_msg(msg=f"\nDone. Project ready at {path}\n"))

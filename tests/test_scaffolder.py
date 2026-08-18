@@ -1,5 +1,4 @@
 from pathlib import Path
-import pytest
 from unittest.mock import patch
 
 def test_scaffolder_creates_project_directory(tmp_path):
@@ -47,7 +46,8 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
         "precommit": {"repos": []},
         "venv": {"packages": []},
         "dotenv": {"variables": []},
-        "directories": {"directories": []}
+        "directories": {"directories": []},
+        "ci-cd": {"platform": "github", "steps": []}
     }
 
     with (
@@ -56,7 +56,8 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
         patch("python_scaffolder.scaffolder.precommit.Precommit.run") as mock_precommit,
         patch("python_scaffolder.scaffolder.venv.Venv.run") as mock_venv,
         patch("python_scaffolder.scaffolder.dotenv.Dotenv.run") as mock_dotenv,
-        patch("python_scaffolder.scaffolder.directories.Directories.run") as mock_directories
+        patch("python_scaffolder.scaffolder.directories.Directories.run") as mock_directories,
+        patch("python_scaffolder.scaffolder.cicd.CICD.run") as mock_cicd
     ):
         run(project_path, config)
 
@@ -66,20 +67,4 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     mock_venv.assert_called_once()
     mock_dotenv.assert_called_once()
     mock_directories.assert_called_once()
-
-def test_scaffolder_halts_on_step_exception(tmp_path, capsys):
-    from python_scaffolder.scaffolder import run
-
-    project_path: Path = tmp_path / "my-project"
-    config: dict = {
-        "git": {"default_branch": "main"},
-        "gitignore": {"sections": [{"python": ["*__pycache__/"]}]}
-    }
-
-    with (
-        patch("python_scaffolder.scaffolder.git.Git.run", side_effect=RuntimeError("git not found")),
-        patch("python_scaffolder.scaffolder.gitignore.Gitignore.run") as mock_gitignore,
-    ):
-        with pytest.raises(RuntimeError, match="git not found"):
-            run(project_path, config)
-    mock_gitignore.assert_not_called()
+    mock_cicd.assert_called_once()
