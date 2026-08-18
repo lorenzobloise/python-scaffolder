@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from python_scaffolder.steps.step import Step, LogLabel
+from python_scaffolder.steps.step import Step
 
 class Dotenv(Step):
 
@@ -22,4 +22,4 @@ class Dotenv(Step):
             lines.append(f"{key}={value}\n")
         env_file: Path = path / ".env"
         env_file.write_text("\n".join(lines))
-        self.log(f"Generated .env ({len(variables)} variables)", log_label=LogLabel.SUCCESS)
+        self.success(f"Generated .env ({len(variables)} variables)")

@@ -1,7 +1,7 @@
 from pathlib import Path
 import yaml
 
-from python_scaffolder.steps.step import Step, LogLabel
+from python_scaffolder.steps.step import Step
 
 class Precommit(Step):
 
@@ -20,7 +20,7 @@ class Precommit(Step):
         for repo in repos:
             absent_fields: list[str] = _check_absent_fields(repo)
             if absent_fields:
-                self.log(f"Required fields ({', '.join(absent_fields)}) not present for entry {repo}, skipping.", log_label=LogLabel.WARNING)
+                self.warn(f"Required fields ({', '.join(absent_fields)}) not present for entry {repo}, skipping.")
                 continue # Skip this entry
             num_hooks += len(repo['hooks'])
             description: str | None = repo.pop("description", None)
@@ -34,7 +34,7 @@ class Precommit(Step):
             out += "\n"
         precommit_path: Path = path / ".pre-commit-config.yaml"
         precommit_path.write_text(out, encoding='utf-8')
-        self.log(f"Generated .pre-commit-config.yaml ({num_hooks} hooks)", log_label=LogLabel.SUCCESS)
+        self.success(f"Generated .pre-commit-config.yaml ({num_hooks} hooks)")
 
 _REQUIRED_FIELDS: list[str] = ["id", "repo", "rev", "hooks"]
 

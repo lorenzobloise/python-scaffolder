@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from python_scaffolder.steps.step import Step, LogLabel
+from python_scaffolder.steps.step import Step
 
 class Gitignore(Step):
 
@@ -20,10 +20,10 @@ class Gitignore(Step):
             blocks: list[str] = sections.get(sec, [])
             if not blocks:
                 blocks = []
-                self.log(f"Empty section '{sec}', skipping.", log_label=LogLabel.WARNING)
+                self.warn(f"Empty section '{sec}', skipping.")
             lines.extend(blocks)
             if blocks:
                 non_empty_sections.append(sec)
         gitignore_path: Path = path / ".gitignore"
         gitignore_path.write_text("\n".join(lines))
-        self.log(f"Generated .gitignore (sections: {', '.join(non_empty_sections)})", log_label=LogLabel.SUCCESS)
+        self.success(f"Generated .gitignore (sections: {', '.join(non_empty_sections)})")
