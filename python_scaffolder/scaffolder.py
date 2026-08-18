@@ -1,10 +1,14 @@
+import itertools
 from pathlib import Path
+import sys
+import threading
+import time
 from tqdm import tqdm
 
 from python_scaffolder.config import get_step_config
 from python_scaffolder.steps import dotenv, git, gitignore, precommit, venv
 from python_scaffolder.steps.step import Step
-from python_scaffolder.utils import _log
+from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, _HIDE_CURSOR, _SHOW_CURSOR
 
 _STEPS = [
     ("git", git.Git),
@@ -13,6 +17,29 @@ _STEPS = [
     ("venv", venv.Venv),
     ("dotenv", dotenv.Dotenv)
 ]
+
+def _tqdm_loading(msg: str="Loading...", step_name: str="", interval: float=0.25) -> tuple:
+    stop_event = threading.Event()
+    spinner_bar: tqdm = tqdm(total=0, bar_format="{desc}", position=0, leave=False)
+
+    def spinner():
+        sys.stdout.write(_HIDE_CURSOR)
+        sys.stdout.flush()
+        time.sleep(interval)
+        for symbol in itertools.cycle(["|", "/", "-", "\\"]):
+            if stop_event.is_set():
+                break
+            line: str = Step._format_msg(msg=f"{symbol} {msg}", step_name=step_name)
+            spinner_bar.set_description_str(line)
+            time.sleep(interval)
+        sys.stdout.write(_SHOW_CURSOR)
+        sys.stdout.flush()
+
+    thread = threading.Thread(target=spinner, daemon=True)
+    thread.start()
+
+    return stop_event, thread, spinner_bar
+
 
 def run(path: Path, config: dict) -> None:
     """
@@ -23,12 +50,19 @@ def run(path: Path, config: dict) -> None:
     _log(Step._format_msg(msg=f"\nCreating project at {path}...\n"))
     path.mkdir(parents=True, exist_ok=False)
 
-    for step_name, StepModule in tqdm(_STEPS, total=len(_STEPS), mininterval=0.0, leave=False):
-        _log(Step._format_msg(msg="Loading...", step_name=step_name))
-        step_config: dict | None = get_step_config(config, step_name)
-        if not step_config:
-            _log(Step._format_msg(msg="Skipping: not configured", step_name=step_name))
-            continue
-        StepModule().run(path, step_config)
+    progress_bar: tqdm = tqdm(_STEPS, total=len(_STEPS), position=1, mininterval=0.0, leave=False)
+    for step_name, StepModule in progress_bar:
+        stop_event, thread, spinner_bar = _tqdm_loading(step_name=step_name)
+
+        try:
+            step_config: dict | None = get_step_config(config, step_name)
+            if not step_config:
+                _log(Step._format_msg(msg="Skipping: not configured", step_name=step_name), start=_CARRIAGE_RETURN_SEQUENCE)
+                continue
+            StepModule().run(path, step_config)
+        finally:
+            stop_event.set()
+            thread.join()
+            spinner_bar.close()
 
     _log(Step._format_msg(msg=f"\nDone. Project ready at {path}\n"))

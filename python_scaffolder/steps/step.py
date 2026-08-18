@@ -2,11 +2,10 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from pathlib import Path
 
-from python_scaffolder.utils import _log
+from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE
 
 _NUM_INDENTATIONS: int = 1
 _WIDTH: int = 15
-_CARRIAGE_RETURN_SEQUENCE: str = "\033[1A\r"
 
 class LogLabel(Enum):
     INFO = ""
