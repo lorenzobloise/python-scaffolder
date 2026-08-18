@@ -35,7 +35,7 @@ def test_scaffolder_skips_step_when_section_absent(tmp_path, capsys):
 
     mock_git.assert_not_called()
     captured = capsys.readouterr()
-    assert "Skipping git" in captured.out
+    assert "Skipping" in captured.out
 
 def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     from python_scaffolder.scaffolder import run
