@@ -23,8 +23,8 @@ class Step(ABC):
             start_label = f"{current_step_label:<{_WIDTH}}{'  ' * _NUM_INDENTATIONS}"
         return f"{start_label}{log_label}{msg}"
 
-    def log(self, msg: str) -> None:
-        _log(Step._format_msg(msg=msg, step_name=self.name))
+    def log(self, msg: str, end: str="\n") -> None:
+        _log(Step._format_msg(msg=msg, step_name=self.name), end=end)
 
     def warn(self, msg: str) -> None:
         _log(Step._format_msg(msg=msg, step_name=self.name, log_label="Warning: "))
