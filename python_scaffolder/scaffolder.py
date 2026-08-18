@@ -6,7 +6,7 @@ import time
 from tqdm import tqdm
 
 from python_scaffolder.config import get_step_config
-from python_scaffolder.steps import dotenv, git, gitignore, precommit, venv
+from python_scaffolder.steps import directories, dotenv, git, gitignore, precommit, venv
 from python_scaffolder.steps.step import Step
 from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, _HIDE_CURSOR, _SHOW_CURSOR
 
@@ -15,7 +15,8 @@ _STEPS = [
     ("gitignore", gitignore.Gitignore),
     ("precommit", precommit.Precommit),
     ("venv", venv.Venv),
-    ("dotenv", dotenv.Dotenv)
+    ("dotenv", dotenv.Dotenv),
+    ("directories", directories.Directories)
 ]
 
 def _tqdm_loading(msg: str="Loading...", step_name: str="", interval: float=0.25) -> tuple:

@@ -79,3 +79,8 @@ dotenv:
       value: "true"
     - key: LOG_LEVEL
       value: "INFO"
+
+directories:
+  directories:
+    - docs/
+    - tests/
