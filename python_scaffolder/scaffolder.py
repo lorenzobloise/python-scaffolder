@@ -23,7 +23,7 @@ def run(path: Path, config: dict) -> None:
     _log(Step._format_msg(msg=f"\nCreating project at {path}...\n"))
     path.mkdir(parents=True, exist_ok=False)
 
-    for step_name, StepModule in tqdm(_STEPS, total=len(_STEPS), leave=False):
+    for step_name, StepModule in tqdm(_STEPS, total=len(_STEPS), mininterval=0.0, leave=False):
         _log(Step._format_msg(msg="Loading...", step_name=step_name))
         step_config: dict | None = get_step_config(config, step_name)
         if not step_config:
