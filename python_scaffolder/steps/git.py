@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
 
-from python_scaffolder.steps.step import Step
+from python_scaffolder.steps.step import Step, LogLabel
 
 class Git(Step):
 
@@ -28,4 +28,4 @@ class Git(Step):
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
-        self.success(f"Initialized repository (branch: {branch})")
+        self.log(f"Initialized repository (branch: {branch})", log_label=LogLabel.SUCCESS)

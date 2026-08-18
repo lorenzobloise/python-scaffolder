@@ -1,10 +1,17 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 from pathlib import Path
 
 from python_scaffolder.utils import _log
 
 _NUM_INDENTATIONS: int = 1
 _WIDTH: int = 15
+
+class LogLabel(Enum):
+    INFO = ""
+    WARNING = "Warning: "
+    ERROR = "Error: "
+    SUCCESS = "✓ "
 
 class Step(ABC):
 
@@ -23,14 +30,5 @@ class Step(ABC):
             start_label = f"{current_step_label:<{_WIDTH}}{'  ' * _NUM_INDENTATIONS}"
         return f"{start_label}{log_label}{msg}"
 
-    def log(self, msg: str, end: str="\n") -> None:
-        _log(Step._format_msg(msg=msg, step_name=self.name), end=end)
-
-    def warn(self, msg: str) -> None:
-        _log(Step._format_msg(msg=msg, step_name=self.name, log_label="Warning: "))
-
-    def error(self, msg: str) -> None:
-        _log(Step._format_msg(msg=msg, step_name=self.name, log_label="Error: "))
-
-    def success(self, msg: str) -> None:
-        _log(Step._format_msg(msg=msg, step_name=self.name, log_label="✓ "))
+    def log(self, msg: str, log_label: LogLabel=LogLabel.INFO) -> None:
+        _log(Step._format_msg(msg=msg, step_name=self.name, log_label=log_label.value))

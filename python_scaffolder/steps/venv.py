@@ -2,7 +2,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from python_scaffolder.steps.step import Step
+from python_scaffolder.steps.step import Step, LogLabel
 
 def _pip_path(project_path: Path) -> Path:
     """Return the path to pip inside the .venv, cross-platform."""
@@ -38,6 +38,6 @@ class Venv(Step):
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
             )
-            self.success(f"Created .venv, installed: {', '.join(packages)}")
+            self.log(f"Created .venv, installed: {', '.join(packages)}", log_label=LogLabel.SUCCESS)
         else:
-            self.success("Created .venv")
+            self.log("Created .venv", log_label=LogLabel.SUCCESS)

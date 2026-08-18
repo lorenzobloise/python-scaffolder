@@ -13,7 +13,7 @@ from abc import ABC
 # Concrete stub — the minimal Step implementation used across all tests
 # ---------------------------------------------------------------------------
 
-from python_scaffolder.steps.step import Step
+from python_scaffolder.steps.step import Step, LogLabel
 
 
 class ConcreteStep(Step):
@@ -117,68 +117,68 @@ class TestLogHelper:
 
 class TestWarnHelper:
     def test_warn_prints_with_step_name_prefix(self, capsys):
-        ConcreteStep().warn("something missing")
+        ConcreteStep().log("something missing", log_label=LogLabel.WARNING)
         out = capsys.readouterr().out
         assert "[test-step]" in out
         assert "something missing" in out
 
     def test_warn_contains_warning_indicator(self, capsys):
-        ConcreteStep().warn("bad field")
+        ConcreteStep().log("bad field", log_label=LogLabel.WARNING)
         out = capsys.readouterr().out
         assert "Warning" in out or "warning" in out
 
     def test_warn_ends_with_newline(self, capsys):
-        ConcreteStep().warn("msg")
+        ConcreteStep().log("msg", log_label=LogLabel.WARNING)
         out = capsys.readouterr().out
         assert out.endswith("\n")
 
     def test_warn_does_not_write_to_stderr(self, capsys):
-        ConcreteStep().warn("msg")
+        ConcreteStep().log("msg", log_label=LogLabel.WARNING)
         assert capsys.readouterr().err == ""
 
 
 class TestErrorHelper:
     def test_error_prints_with_step_name_prefix(self, capsys):
-        ConcreteStep().error("something went wrong")
+        ConcreteStep().log("something went wrong", log_label=LogLabel.ERROR)
         out = capsys.readouterr().out
         assert "[test-step]" in out
         assert "something went wrong" in out
 
     def test_error_contains_error_indicator(self, capsys):
-        ConcreteStep().error("boom")
+        ConcreteStep().log("boom", log_label=LogLabel.ERROR)
         out = capsys.readouterr().out
         assert "Error" in out or "error" in out
 
     def test_error_ends_with_newline(self, capsys):
-        ConcreteStep().error("msg")
+        ConcreteStep().log("msg", log_label=LogLabel.ERROR)
         out = capsys.readouterr().out
         assert out.endswith("\n")
 
     def test_error_does_not_write_to_stderr(self, capsys):
-        ConcreteStep().error("msg")
+        ConcreteStep().log("msg", log_label=LogLabel.ERROR)
         assert capsys.readouterr().err == ""
 
 
 class TestSuccessHelper:
     def test_success_prints_with_step_name_prefix(self, capsys):
-        ConcreteStep().success("all done")
+        ConcreteStep().log("all done", log_label=LogLabel.SUCCESS)
         out = capsys.readouterr().out
         assert "[test-step]" in out
         assert "all done" in out
 
     def test_success_contains_success_indicator(self, capsys):
-        ConcreteStep().success("done")
+        ConcreteStep().log("done", log_label=LogLabel.SUCCESS)
         out = capsys.readouterr().out
         # accepts ✓, OK, ok, success, or similar
         assert any(tok in out for tok in ("✓", "OK", "ok", "success", "Success"))
 
     def test_success_ends_with_newline(self, capsys):
-        ConcreteStep().success("msg")
+        ConcreteStep().log("msg", log_label=LogLabel.SUCCESS)
         out = capsys.readouterr().out
         assert out.endswith("\n")
 
     def test_success_does_not_write_to_stderr(self, capsys):
-        ConcreteStep().success("msg")
+        ConcreteStep().log("msg", log_label=LogLabel.SUCCESS)
         assert capsys.readouterr().err == ""
 
 
@@ -207,13 +207,13 @@ class TestHelpersUseInstanceName:
         assert "[customname]" in capsys.readouterr().out
 
     def test_warn_uses_instance_name(self, custom_step, capsys):
-        custom_step.warn("hello")
+        custom_step.log("hello", log_label=LogLabel.WARNING)
         assert "[customname]" in capsys.readouterr().out
 
     def test_error_uses_instance_name(self, custom_step, capsys):
-        custom_step.error("hello")
+        custom_step.log("hello", log_label=LogLabel.ERROR)
         assert "[customname]" in capsys.readouterr().out
 
     def test_success_uses_instance_name(self, custom_step, capsys):
-        custom_step.success("hello")
+        custom_step.log("hello", log_label=LogLabel.SUCCESS)
         assert "[customname]" in capsys.readouterr().out
