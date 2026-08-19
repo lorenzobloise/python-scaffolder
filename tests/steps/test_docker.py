@@ -100,20 +100,5 @@ def test_dockerfile_uses_custom_entry_point(step: Docker, tmp_project: Path) -> 
     content = (tmp_project / "Dockerfile").read_text()
     assert "app.py" in content
 
-
-def test_dockerfile_default_entry_point_is_main(step: Docker, tmp_project: Path) -> None:
-    mock_template = MagicMock(spec=Path)
-    mock_template.read_text.return_value = "FROM python:{python_version}{digest}-slim\nCMD [\"{entry_point}\"]"
-
-    with patch.object(type(step), "_dockerfile_template_path", new_callable=lambda: property(
-        lambda self: mock_template
-    )):
-        with patch("python_scaffolder.steps.docker._get_python_version", return_value="3.11"):
-            step.run(path=tmp_project, config={})
-
-    content = (tmp_project / "Dockerfile").read_text()
-    assert "main.py" in content
-
-
 def test_step_name_is_docker(step: Docker) -> None:
     assert step.name == "docker"

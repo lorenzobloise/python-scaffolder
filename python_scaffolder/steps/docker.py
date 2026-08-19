@@ -34,7 +34,7 @@ class Docker(Step):
             entry_point = f'CMD ["python", "{entry_point}"]'
         template: Path = self._dockerfile_template_path
         file_content: str = template.read_text().format(
-            version=python_version,
+            python_version=python_version,
             digest=digest,
             entry_point=entry_point
         )
