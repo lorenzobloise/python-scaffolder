@@ -2,7 +2,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from python_scaffolder.utils import _get_python_interpreter
+from python_scaffolder.utils import _get_python_version, _get_python_interpreter
 from python_scaffolder.steps.step import Step
 
 def _pip_path(project_path: Path) -> Path:
@@ -18,10 +18,9 @@ class Venv(Step):
         return "venv"
 
     def _find_python_interpreter(self, path: Path) -> str:
-        python_version_file: Path = path / ".python-version"
-        if not python_version_file.exists():
+        python_version: str | None = _get_python_version(path)
+        if not python_version:
             return sys.executable
-        python_version: str = python_version_file.read_text()
         python_interpreter: str | None = _get_python_interpreter(python_version)
         if not python_interpreter:
             self.error(f"Python interpreter not found for version {python_version}")

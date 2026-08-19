@@ -15,6 +15,12 @@ def _log(msg: str, file=None, start: str="", end: str="\n"):
 class BusinessException(Exception):
     pass
 
+def _get_python_version(path: Path) -> str | None:
+    python_version_file: Path = path / ".python-version"
+    if not python_version_file.exists():
+        return None
+    return python_version_file.read_text()
+
 def _get_python_interpreter(python_version: str, cache_path: Path=PYTHON_INTERPRETERS_INFO_PATH) -> str | None:
     if not cache_path.exists():
         return None
