@@ -111,6 +111,7 @@ dotenv:
 
 directories:
   directories:
+    - <project_dir>
     - docs/
     - tests/
 
