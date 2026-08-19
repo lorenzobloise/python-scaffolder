@@ -85,13 +85,13 @@ jobs:
       - name: Install build tools
         # "build" creates the wheel (.whl) and the source distribution (.tar.gz).
         # "twine" validates the generated files before uploading them.
-        run: pip install build twine setuptools>=68
+        run: python -m pip install --upgrade pip build twine
 
       - name: Build the package
         # Generates the distribution files in dist/:
         #   - python_scaffolder-X.Y.Z-py3-none-any.whl  (wheel)
         #   - python_scaffolder-X.Y.Z.tar.gz             (sdist)
-        run: python -m build
+        run: python -m build --no-isolation
 
       - name: Validate the package with Twine
         # Checks that the package metadata and contents are correct before
