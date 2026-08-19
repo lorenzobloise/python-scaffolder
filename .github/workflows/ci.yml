@@ -101,9 +101,9 @@ jobs:
         # missing metadata fields).
         run: twine check dist/*
 
-      - name: Debug OIDC claims
+      - name: Debug PyPI OIDC claims
         env:
-          AUDIENCE: "https://github.com/${{ github.repository_owner }}"
+          AUDIENCE: "pypi"
         run: |
           TOKEN_JSON=$(curl -s \
             -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
@@ -117,7 +117,9 @@ jobs:
             | jq '{
                 aud,
                 repository,
+                repository_id,
                 repository_owner,
+                repository_owner_id,
                 workflow,
                 workflow_ref,
                 job_workflow_ref,
