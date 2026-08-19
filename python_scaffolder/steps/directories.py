@@ -18,8 +18,10 @@ class Directories(Step):
         Create an empty directory from the directory list in config.
         """
         directories: list[str] = config.get("directories", [])
+        created_directories: list[str] = []
         for d in directories:
             new_dir: Path = self._build_dir_path(path, d)
+            created_directories.append(str(new_dir))
             dir_path: Path = path / new_dir
             dir_path.mkdir(parents=True, exist_ok=True)
-        self.success(f"Created directories: {', '.join(directories)}")
+        self.success(f"Created directories: {', '.join(created_directories)}")
