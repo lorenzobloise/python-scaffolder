@@ -91,7 +91,7 @@ jobs:
         # Generates the distribution files in dist/:
         #   - python_scaffolder-X.Y.Z-py3-none-any.whl  (wheel)
         #   - python_scaffolder-X.Y.Z.tar.gz             (sdist)
-        run: python -m build --no-isolation
+        run: python -m build
 
       - name: Validate the package with Twine
         # Checks that the package metadata and contents are correct before
