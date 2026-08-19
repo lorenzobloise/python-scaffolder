@@ -2,6 +2,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from python_scaffolder.utils import _get_python_interpreter
 from python_scaffolder.steps.step import Step
 
 def _pip_path(project_path: Path) -> Path:
@@ -16,14 +17,27 @@ class Venv(Step):
     def name(self) -> str:
         return "venv"
 
+    def _find_python_interpreter(self, path: Path) -> str:
+        python_version_file: Path = path / ".python-version"
+        if not python_version_file.exists():
+            return sys.executable
+        python_version: str = python_version_file.read_text()
+        python_interpreter: str | None = _get_python_interpreter(python_version)
+        if not python_interpreter:
+            self.error(f"Python interpreter not found for version {python_version}")
+            return
+        return python_interpreter
+
     def run(self, path: Path, config: dict) -> None:
         """
-        Create a .venv inside path using the current Python interpreter.
+        Create a .venv inside path using the Python version set in the .python-version file,
+        or the current Python interpreter if the file does not exist.
         If config['packages'] is non-empty, install them via the venv's pip
         """
         venv_path: Path = path / ".venv"
+        python_interpreter: str = self._find_python_interpreter(path)
         subprocess.run(
-            [sys.executable, "-m", "venv", str(venv_path)],
+            [python_interpreter, "-m", "venv", str(venv_path)],
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL

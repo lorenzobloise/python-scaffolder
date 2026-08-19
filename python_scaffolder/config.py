@@ -1,10 +1,9 @@
 from importlib.resources import files
-from pathlib import Path
 import yaml
 
-from python_scaffolder.utils import _log
+from python_scaffolder.utils import _log, PYTHON_SCAFFOLDER_PATH
 
-CONFIG_PATH = Path.home() / ".python-scaffolder" / "config.yaml"
+CONFIG_PATH = PYTHON_SCAFFOLDER_PATH / "config.yaml"
 
 def load_config() -> dict:
     """

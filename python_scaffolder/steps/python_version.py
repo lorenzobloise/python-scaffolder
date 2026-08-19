@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 import platform
@@ -5,6 +6,7 @@ import shutil
 import subprocess
 import sys
 
+from python_scaffolder.utils import PYTHON_INTERPRETERS_INFO_PATH
 from python_scaffolder.steps.step import Step
 
 class PythonVersion(Step):
@@ -37,8 +39,7 @@ class PythonVersion(Step):
                 "version": f"{lines[1]}.{lines[2]}.{lines[3]}"
             }
             return info
-        except (OSError, subprocess.SubprocessError) as e:
-            print(f"\n{str(e)}\n")
+        except (OSError, subprocess.SubprocessError):
             return None
 
     def __find_python_executables(self) -> set[str]:
@@ -96,14 +97,18 @@ class PythonVersion(Step):
                             path = parts[-1]
                             if os.path.isfile(path):
                                 candidates.add(path)
-                except (OSError, subprocess.SubprocessError) as e:
-                    print(f"py error: {e}")
+                except (OSError, subprocess.SubprocessError):
                     pass
         return candidates
 
+    def __save_python_interpreters_info(self, info: dict[str, str]):
+        PYTHON_INTERPRETERS_INFO_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(PYTHON_INTERPRETERS_INFO_PATH, 'w', encoding='utf-8') as f:
+            json.dump(info, f)
+
     def _find_all_python_versions(self) -> list[str]:
         """Returns all detected Python installations."""
-        results: list[str] = []
+        results: list[dict[str, str]] = []
         seen: set[str] = set()
         for executable in self.__find_python_executables():
             info: dict[str, str] | None = self.__get_python_info(executable)
@@ -121,13 +126,14 @@ class PythonVersion(Step):
             seen.add(normalized_path)
             if not len(info["version"].split(".")) == 3:
                 continue # Badly formatted version
-            results.append(info["version"])
+            results.append(info)
         # Sort by version (latest first)
         results.sort(
-            key=lambda x: tuple(map(int, x.split("."))),
+            key=lambda x: tuple(map(int, x["version"].split("."))),
             reverse=True
         )
-        return results
+        self.__save_python_interpreters_info(results)
+        return [x["version"] for x in results]
 
     def _map_specific_python_interpreter(self, python_version: str, python_interpreters: list[str]) -> str | None:
         """
