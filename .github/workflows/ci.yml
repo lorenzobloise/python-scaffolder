@@ -8,7 +8,7 @@
 #   Name:  PYPI_API_TOKEN
 #   Value: the token from pypi.org → Account settings → API tokens
 
-name: CI/CD
+name: ci.yml
 
 on:
   push:
