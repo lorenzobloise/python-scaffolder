@@ -41,6 +41,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
 
     project_path: Path = tmp_path / "my-project"
     config: dict = {
+        "python-version": {"version": "3.13"},
         "git": {"default_branch": "main"},
         "gitignore": {"sections": [{"python": ["*__pycache__/"]}]},
         "precommit": {"repos": []},
@@ -51,6 +52,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     }
 
     with (
+        patch("python_scaffolder.scaffolder.python_version.PythonVersion.run") as mock_python_version,
         patch("python_scaffolder.scaffolder.git.Git.run") as mock_git,
         patch("python_scaffolder.scaffolder.gitignore.Gitignore.run") as mock_gitignore,
         patch("python_scaffolder.scaffolder.precommit.Precommit.run") as mock_precommit,
@@ -61,6 +63,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     ):
         run(project_path, config)
 
+    mock_python_version.assert_called_once()
     mock_git.assert_called_once()
     mock_gitignore.assert_called_once()
     mock_precommit.assert_called_once()

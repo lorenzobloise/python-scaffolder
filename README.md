@@ -26,6 +26,9 @@ Comment out an entire section to disable that step.
 # python-scaffolder configuration
 # Comment out an entire top-level section to disable the corresponding scaffolding step
 
+python-version:
+  version: "3.13"
+
 git:
   default_branch: main
 
@@ -41,6 +44,7 @@ gitignore:
       - 'build/'
       - '*.egg'
       - '.eggs/'
+      - '.python-version'
     venv:
       - '*.venv/'
       - '*venv/'

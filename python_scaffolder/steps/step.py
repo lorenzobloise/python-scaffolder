@@ -5,7 +5,7 @@ from pathlib import Path
 from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, BusinessException
 
 _NUM_INDENTATIONS: int = 1
-_WIDTH: int = 15
+_WIDTH: int = 20
 
 class LogLabel(Enum):
     INFO = ""
