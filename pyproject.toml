@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py-scaffoldr"
-version = "1.0.0"
+version = "1.0.1"
 requires-python = ">=3.10"
 dependencies = ["pyyaml", "tqdm"]
 
@@ -14,8 +14,9 @@ python-scaffolder = "python_scaffolder.cli:main"
 [project.optional-dependencies]
 test = ["pytest"]
 
-[tool.setuptools]
-packages = ["python_scaffolder"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["python_scaffolder*"]
 
 [tool.setuptools.package-data]
 python_scaffolder = [
