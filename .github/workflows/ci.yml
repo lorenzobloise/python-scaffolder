@@ -92,8 +92,7 @@ jobs:
         run: twine check dist/*
 
       - name: Publish to PyPI
-        # Uploads the files in dist/ to pypi.org.
-        run: twine upload dist/*
+        run: twine upload --verbose dist/*
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
