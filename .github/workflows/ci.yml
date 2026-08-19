@@ -2,11 +2,6 @@
 # Two separate jobs:
 #   1. "test"    → runs on every push on branch 'main' and every Pull Request
 #   2. "publish" → runs ONLY when a release tag is pushed (e.g. v0.2.0)
-#
-# To publish to PyPI using a classic API token, add a secret to the repository:
-#   Settings → Secrets and variables → Actions → New repository secret
-#   Name:  PYPI_API_TOKEN
-#   Value: the token from pypi.org → Account settings → API tokens
 
 name: ci.yml
 
@@ -69,11 +64,6 @@ jobs:
 
     environment: pypi
 
-    # Permissions required for PyPI Trusted Publishing (OIDC).
-    # Remove this block if you prefer a classic API token instead.
-    permissions:
-      id-token: write
-
     steps:
       - name: Check out the source code
         uses: actions/checkout@v4
@@ -101,41 +91,9 @@ jobs:
         # missing metadata fields).
         run: twine check dist/*
 
-      - name: Debug PyPI OIDC claims
-        env:
-          AUDIENCE: "pypi"
-        run: |
-          TOKEN_JSON=$(curl -s \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE")
-
-          ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r '.value')
-
-          echo "$ID_TOKEN" \
-            | cut -d '.' -f2 \
-            | base64 -d 2>/dev/null \
-            | jq '{
-                aud,
-                repository,
-                repository_id,
-                repository_owner,
-                repository_owner_id,
-                workflow,
-                workflow_ref,
-                job_workflow_ref,
-                environment,
-                ref,
-                ref_type,
-                sub
-              }'
-
       - name: Publish to PyPI
         # Uploads the files in dist/ to pypi.org.
-        # Uses Trusted Publishing (OIDC) — no password or token needed if you have
-        # configured the publisher on pypi.org → your project → Publishing.
-        # To use a classic API token instead, replace this step with:
-        #   run: twine upload dist/*
-        #   env:
-        #     TWINE_USERNAME: __token__
-        #     TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        uses: pypa/gh-action-pypi-publish@release/v1
+        run: twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
