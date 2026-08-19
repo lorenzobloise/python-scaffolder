@@ -7,7 +7,7 @@ import time
 from tqdm import tqdm
 
 from python_scaffolder.config import get_step_config
-from python_scaffolder.steps import cicd, directories, dotenv, git, gitignore, precommit, python_version, venv
+from python_scaffolder.steps import cicd, directories, docker, dotenv, git, gitignore, precommit, python_version, venv
 from python_scaffolder.steps.step import Step
 from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, _HIDE_CURSOR, _SHOW_CURSOR, BusinessException
 
@@ -19,6 +19,7 @@ _STEPS = [
     ("venv", venv.Venv),
     ("dotenv", dotenv.Dotenv),
     ("directories", directories.Directories),
+    ("docker", docker.Docker),
     ("ci-cd", cicd.CICD)
 ]
 
@@ -65,13 +66,13 @@ def run(path: Path, config: dict) -> None:
                     _log(Step._format_msg(msg="Skipping: not configured", step_name=step_name), start=_CARRIAGE_RETURN_SEQUENCE)
                     continue
                 StepModule().run(path, step_config)
-            except BusinessException:
-                raise Exception
             finally:
                 stop_event.set()
                 thread.join()
                 spinner_bar.close()
-    except Exception:
+    except Exception as e:
+        if not isinstance(e, BusinessException):
+            _log(Step._format_msg(msg=e))
         _log(Step._format_msg(msg=f"\nCleaning up {path}...\n"))
         shutil.rmtree(path)
         _log(Step._format_msg(msg="Cleaning up completed.\n"))

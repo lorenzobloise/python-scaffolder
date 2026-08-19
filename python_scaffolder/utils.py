@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import subprocess
 from tqdm import tqdm
 
 PYTHON_SCAFFOLDER_PATH: Path = Path.home() / ".python-scaffolder"
@@ -14,6 +15,15 @@ def _log(msg: str, file=None, start: str="", end: str="\n"):
 
 class BusinessException(Exception):
     pass
+
+def _get_python_version_from_executable(executable: str) -> str:
+    result = subprocess.run(
+        [executable, "--version"],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+    return result.stdout.strip() or result.stderr.strip()
 
 def _get_python_version(path: Path) -> str | None:
     python_version_file: Path = path / ".python-version"

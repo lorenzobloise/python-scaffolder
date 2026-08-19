@@ -115,6 +115,10 @@ directories:
     - docs/
     - tests/
 
+docker:
+  digest: null
+  entry_point: "main.py"
+
 ci-cd:
   platform: github # {github -> GitHub Actions, gitlab -> GitLab Pipelines, devops -> Azure DevOps Pipelines}
   steps:
