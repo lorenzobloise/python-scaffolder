@@ -5,7 +5,7 @@ A pip-installable CLI tool that scaffolds new Python projects from a YAML config
 ## Installation
 
 ```bash
-pip install git+https://github.com/<org>/python-scaffolder
+pip install py-scaffoldr
 ```
 
 ## Usage
