@@ -28,8 +28,10 @@ class Docker(Step):
         if digest:
             digest = f"@{digest}"
         python_version: str = _get_python_version(path) or _get_python_version_from_executable(sys.executable)
-        entry_point: str = config.get("entry_point", "main.py")
-        self._create_entry_point_file(path, entry_point)
+        entry_point: str = config.get("entry_point", "") or ""
+        if entry_point:
+            self._create_entry_point_file(path, entry_point)
+            entry_point = f'CMD ["python", "{entry_point}"]'
         template: Path = self._dockerfile_template_path
         file_content: str = template.read_text().format(
             version=python_version,
@@ -38,4 +40,7 @@ class Docker(Step):
         )
         dockerfile_path: Path = path / "Dockerfile"
         dockerfile_path.write_text(file_content)
-        self.success(f"Created Dockerfile and entry point {entry_point}")
+        if entry_point:
+            self.success(f"Created Dockerfile and entry point {entry_point}")
+        else:
+            self.success("Created Dockerfile")
