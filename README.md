@@ -111,10 +111,11 @@ precommit:
       hooks:
         - id: ensure-gitignore-vscode
 
-venv:
+dependencies:
   packages:
     - pre-commit
     - pytest
+  create_venv: False # Slower scaffolding
 
 dotenv:
   variables:
