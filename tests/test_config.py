@@ -29,7 +29,7 @@ def test_load_config_creates_default_when_missing(tmp_path):
     assert "git" in result
     assert "gitignore" in result
     assert "precommit" in result
-    assert "venv" in result
+    assert "dependencies" in result
     assert "dotenv" in result
 
 def test_load_config_prints_message_on_bootstrap(tmp_path, capsys):

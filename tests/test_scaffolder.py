@@ -45,7 +45,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
         "git": {"default_branch": "main"},
         "gitignore": {"sections": [{"python": ["*__pycache__/"]}]},
         "precommit": {"repos": []},
-        "venv": {"packages": []},
+        "dependencies": {"create_venv": False, "packages": []},
         "dotenv": {"variables": []},
         "directories": {"directories": []},
         "docker": {"digest": None, "entry_point": "main.py"},
@@ -58,7 +58,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
         patch("python_scaffolder.scaffolder.git.Git.run") as mock_git,
         patch("python_scaffolder.scaffolder.gitignore.Gitignore.run") as mock_gitignore,
         patch("python_scaffolder.scaffolder.precommit.Precommit.run") as mock_precommit,
-        patch("python_scaffolder.scaffolder.venv.Venv.run") as mock_venv,
+        patch("python_scaffolder.scaffolder.dependencies.Dependencies.run") as mock_dependencies,
         patch("python_scaffolder.scaffolder.dotenv.Dotenv.run") as mock_dotenv,
         patch("python_scaffolder.scaffolder.directories.Directories.run") as mock_directories,
         patch("python_scaffolder.scaffolder.docker.Docker.run") as mock_docker,
@@ -71,7 +71,7 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     mock_git.assert_called_once()
     mock_gitignore.assert_called_once()
     mock_precommit.assert_called_once()
-    mock_venv.assert_called_once()
+    mock_dependencies.assert_called_once()
     mock_dotenv.assert_called_once()
     mock_directories.assert_called_once()
     mock_docker.assert_called_once()

@@ -7,7 +7,7 @@ import time
 from tqdm import tqdm
 
 from python_scaffolder.config import get_step_config
-from python_scaffolder.steps import cicd, directories, docker, dotenv, git, gitignore, precommit, pyproject, python_version, venv
+from python_scaffolder.steps import cicd, dependencies, directories, docker, dotenv, git, gitignore, precommit, pyproject, python_version
 from python_scaffolder.steps.step import Step
 from python_scaffolder.utils import _log, _CARRIAGE_RETURN_SEQUENCE, _HIDE_CURSOR, _SHOW_CURSOR, BusinessException
 
@@ -16,7 +16,7 @@ _STEPS = [
     ("git", git.Git),
     ("gitignore", gitignore.Gitignore),
     ("precommit", precommit.Precommit),
-    ("venv", venv.Venv),
+    ("dependencies", dependencies.Dependencies),
     ("dotenv", dotenv.Dotenv),
     ("directories", directories.Directories),
     ("docker", docker.Docker),
