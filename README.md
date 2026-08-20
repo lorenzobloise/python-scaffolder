@@ -151,5 +151,4 @@ precommit:
 **Lorenzo Bloise**
 Developer & Maintainer
 
-- 📧 [l.bloise@reply.it](mailto:l.bloise@reply.it)
 - 📧 [l.bloise@outlook.it](mailto:l.bloise@outlook.it)
