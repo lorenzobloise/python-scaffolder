@@ -1,0 +1,3 @@
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["{source_dir}*"]

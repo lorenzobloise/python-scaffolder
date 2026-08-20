@@ -105,3 +105,6 @@ ci-cd:
   steps:
     - test
     - docker
+
+pyproject.toml:
+  source_dir: <project_dir>

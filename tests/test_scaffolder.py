@@ -49,7 +49,8 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
         "dotenv": {"variables": []},
         "directories": {"directories": []},
         "docker": {"digest": None, "entry_point": "main.py"},
-        "ci-cd": {"platform": "github", "steps": []}
+        "ci-cd": {"platform": "github", "steps": []},
+        "pyproject.toml": {"source_dir": "<project_dir>"}
     }
 
     with (
@@ -61,7 +62,8 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
         patch("python_scaffolder.scaffolder.dotenv.Dotenv.run") as mock_dotenv,
         patch("python_scaffolder.scaffolder.directories.Directories.run") as mock_directories,
         patch("python_scaffolder.scaffolder.docker.Docker.run") as mock_docker,
-        patch("python_scaffolder.scaffolder.cicd.CICD.run") as mock_cicd
+        patch("python_scaffolder.scaffolder.cicd.CICD.run") as mock_cicd,
+        patch("python_scaffolder.scaffolder.pyproject.Pyproject.run") as mock_pyproject
     ):
         run(project_path, config)
 
@@ -74,3 +76,4 @@ def test_scaffolder_runs_all_steps_when_all_configured(tmp_path):
     mock_directories.assert_called_once()
     mock_docker.assert_called_once()
     mock_cicd.assert_called_once()
+    mock_pyproject.assert_called_once()

@@ -132,6 +132,9 @@ ci-cd:
   steps:
     - test
     - docker
+
+pyproject.toml:
+  source_dir: <project_dir>
 ```
 
 For new pre-commit hooks, provide `id`, `repo`, `rev` and `hooks` (optionally a `description`):
