@@ -85,6 +85,35 @@ def test_format_source_dir_exact_placeholder_becomes_project_name(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# _get_dependencies
+# ---------------------------------------------------------------------------
+
+def test_get_dependencies_returns_empty_list_when_no_requirements_file(tmp_path):
+    from python_scaffolder.steps.pyproject import Pyproject
+
+    p = Pyproject()
+    assert p._get_dependencies(tmp_path) == []
+
+
+def test_get_dependencies_reads_packages_from_requirements_file(tmp_path):
+    from python_scaffolder.steps.pyproject import Pyproject
+
+    (tmp_path / "requirements.txt").write_text("requests\nflask")
+    p = Pyproject()
+    result = p._get_dependencies(tmp_path)
+    assert "requests" in result
+    assert "flask" in result
+
+
+def test_get_dependencies_returns_one_entry_per_line(tmp_path):
+    from python_scaffolder.steps.pyproject import Pyproject
+
+    (tmp_path / "requirements.txt").write_text("requests\nflask\nclick")
+    p = Pyproject()
+    assert len(p._get_dependencies(tmp_path)) == 3
+
+
+# ---------------------------------------------------------------------------
 # run — pyproject.toml creation (no source_dir)
 # ---------------------------------------------------------------------------
 
@@ -179,6 +208,42 @@ def test_run_with_empty_string_source_dir_does_not_include_packages_section(tmp_
 
     content = (tmp_path / "pyproject.toml").read_text()
     assert "packages" not in content
+
+
+# ---------------------------------------------------------------------------
+# run — dependencies from requirements.txt
+# ---------------------------------------------------------------------------
+
+def test_run_writes_dependencies_from_requirements_file(tmp_path):
+    """Packages listed in requirements.txt must appear in pyproject.toml dependencies."""
+    (tmp_path / "requirements.txt").write_text("requests\nflask")
+    instance, _ = _make_pyproject()
+    _run_with_version_mocks(instance, tmp_path, {})
+
+    content = (tmp_path / "pyproject.toml").read_text()
+    assert "requests" in content
+    assert "flask" in content
+
+
+def test_run_writes_empty_dependencies_when_no_requirements_file(tmp_path):
+    """Without requirements.txt the dependencies field must be empty."""
+    instance, _ = _make_pyproject()
+    _run_with_version_mocks(instance, tmp_path, {})
+
+    content = (tmp_path / "pyproject.toml").read_text()
+    # The template renders: dependencies = []
+    assert "dependencies = []" in content
+
+
+def test_run_quotes_each_dependency(tmp_path):
+    """Each dependency must be wrapped in double quotes in the output."""
+    (tmp_path / "requirements.txt").write_text("requests\nflask")
+    instance, _ = _make_pyproject()
+    _run_with_version_mocks(instance, tmp_path, {})
+
+    content = (tmp_path / "pyproject.toml").read_text()
+    assert '"requests"' in content
+    assert '"flask"' in content
 
 
 # ---------------------------------------------------------------------------

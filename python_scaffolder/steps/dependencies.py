@@ -70,3 +70,5 @@ class Dependencies(Step):
             self._create_requirements_file(path, packages)
             if create_venv:
                 self._install_packages(path, packages)
+        else:
+            self.warn("Skipping: no dependency configured.")
