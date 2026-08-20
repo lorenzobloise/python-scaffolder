@@ -5,7 +5,13 @@ python-version:
   version: "3.13"
 
 git:
+  user.name: null
+  user.email: null
   default_branch: main
+  branches:
+    - main
+    - dev
+    - test
 
 gitignore:
   sections:
