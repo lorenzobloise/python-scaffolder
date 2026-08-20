@@ -10,14 +10,20 @@ A pip-installable CLI tool that scaffolds new Python projects from a YAML config
 pip install py-scaffoldr
 ```
 
+## Setup
+
+To automatically create the default configuration file at `~/.python-scaffolder/config.yaml`, execute:
+
+```bash
+python-scaffolder-setup
+```
+
 ## Usage
 
 ```bash
 python-scaffolder my-new-project
 python-scaffolder /home/user/projects/my-new-project
 ```
-
-On install, default config is created at `~/.python-scaffolder/config.yaml`.
 
 ## Configuration
 

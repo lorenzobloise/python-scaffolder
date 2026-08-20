@@ -10,9 +10,13 @@ dependencies = ["pyyaml", "tqdm"]
 
 [project.scripts]
 python-scaffolder = "python_scaffolder.cli:main"
+python-scaffolder-setup = "bootstrap:main"
 
 [project.optional-dependencies]
 test = ["pytest"]
+
+[tool.setuptools]
+py-modules = ["bootstrap"]
 
 [tool.setuptools.packages.find]
 where = ["."]
