@@ -1,5 +1,7 @@
 # python-scaffolder
 
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/py-scaffoldr?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/py-scaffoldr)
+
 A pip-installable CLI tool that scaffolds new Python projects from a YAML configuration file.
 
 ## Installation
