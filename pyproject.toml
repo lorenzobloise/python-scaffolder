@@ -5,6 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "py-scaffoldr"
 version = "1.1.0"
+authors = [
+    { name="Lorenzo Bloise", email="l.bloise@outlook.it" }
+]
+description = "A pip-installable CLI tool that scaffolds new Python projects from a YAML configuration file"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["pyyaml", "tqdm"]
 
